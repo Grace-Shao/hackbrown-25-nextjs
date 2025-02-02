@@ -13,7 +13,11 @@
  * @requires mongoose - MongoDB object modeling
  * @requires logger - Custom logging utility
  */
-
+import { 
+  getAccessToken,
+  getDetailedPlaylist,
+  currentlyPlayingSong,
+} from '@/lib/spotify';
 import logger from '@/utils/logger'
 import mongoose, { type ConnectOptions } from 'mongoose';
 import { z } from 'zod';
