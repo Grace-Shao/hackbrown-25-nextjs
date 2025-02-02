@@ -1,3 +1,5 @@
+![logo](https://github.com/user-attachments/assets/0d4b2ec8-b1e1-449f-8001-c19ad1bdc44d)
+
 ## Let’s be real
 
 In the world of social media, everyone’s out here trying to stay fresh, cool, and relevant. You want to feel “normal” (whatever that means these days), right? That’s why nobody’s messing around with weird, offbeat music tracks that make your post feel awkward. Platforms like TikTok and Instagram are driving the trend game hard, and creators know it. Catchy pop beats, vibey hip-hop, and those feel-good tracks that everyone’s humming? That’s what’s popping. When your content’s on-trend, you’re not just posting—you’re connecting with your audience in a way that hits just right. 
