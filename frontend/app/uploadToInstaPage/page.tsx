@@ -3,7 +3,7 @@ import Link from "next/link";
 import Navbar from "../components/navbar/Navbar";
 import { useState } from "react";
 
-export default function UploadPicturePage() {
+export default function UploadToInstaPage() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleFileChange = (event) => {
