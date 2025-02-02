@@ -18,18 +18,18 @@ export default function UploadPicturePage() {
     setMusicKeywords("")
 
     try {
-      const response = await axios.post("http://127.0.0.1:5000/analyze-image", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      // const response = await axios.post("http://127.0.0.1:5000/analyze-image", formData, {
+      //   headers: {
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      // })
 
-      if (!response.data.music_keywords) {
-        setError("No music keywords found in the image.")
-        return
-      }
+      // if (!response.data.music_keywords) {
+      //   setError("No music keywords found in the image.")
+      //   return
+      // }
 
-      setMusicKeywords(response.data.music_keywords)
+      setMusicKeywords("pop")
       setShowPopup(true)
     } catch (err) {
       setError("Failed to analyze the image. Please try again.")
@@ -74,4 +74,3 @@ export default function UploadPicturePage() {
     </div>
   )
 }
-

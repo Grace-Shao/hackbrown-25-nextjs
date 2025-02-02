@@ -20,7 +20,7 @@ const PopupContentCreator: React.FC<PopupProps> = ({ text, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="absolute inset-0 bg-black opacity-75"></div>
+      <div className="absolute inset-0 bg-black opacity-75"/>
       <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-8 rounded-lg shadow-lg text-center text-white arcade-font">
       <h2 className="text-4xl mb-4">Best Song Based on Trends</h2>
         {selectedSong && (
