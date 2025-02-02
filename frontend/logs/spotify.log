@@ -1,0 +1,18 @@
+{"level":"info","message":"Starting Spotify API requests","timestamp":"2025-02-02T03:43:21.944Z"}
+{"level":"info","message":"Access token obtained successfully","timestamp":"2025-02-02T03:43:22.292Z"}
+{"level":"info","message":"Access token verified successfully","timestamp":"2025-02-02T03:43:22.293Z"}
+{"level":"info","message":"Access token obtained successfully","timestamp":"2025-02-02T03:43:22.366Z"}
+{"level":"info","message":"Playlist details fetched","name":"LOCK IN‼️‼️‼️‼️‼️‼️","timestamp":"2025-02-02T03:43:22.993Z","total":217}
+{"artist":"VDYCD","level":"info","message":"Using seed track","name":"• L’Art du savoir • - Slowed","popularity":60,"timestamp":"2025-02-02T03:43:22.994Z"}
+{"level":"info","message":"Recommendations received","seedTrack":{"artist":"VDYCD","id":"3pqlWpRxYbZ4rOjrF2sdpS","name":"• L’Art du savoir • - Slowed"},"timestamp":"2025-02-02T03:43:22.996Z"}
+{"level":"info","message":"Access token obtained successfully","timestamp":"2025-02-02T03:43:23.188Z"}
+{"error":"Failed to connect","level":"error","message":"MongoDB operation failed","timestamp":"2025-02-02T03:43:53.440Z"}
+{"level":"info","message":"Starting Spotify API requests","timestamp":"2025-02-02T03:58:43.091Z"}
+{"level":"info","message":"Access token obtained successfully","timestamp":"2025-02-02T03:58:43.456Z"}
+{"level":"info","message":"Access token verified successfully","timestamp":"2025-02-02T03:58:43.457Z"}
+{"level":"info","message":"Access token obtained successfully","timestamp":"2025-02-02T03:58:43.632Z"}
+{"level":"info","message":"Playlist details fetched","name":"LOCK IN‼️‼️‼️‼️‼️‼️","timestamp":"2025-02-02T03:58:44.263Z","total":217}
+{"artist":"VDYCD","level":"info","message":"Using seed track","name":"• L’Art du savoir • - Slowed","popularity":60,"timestamp":"2025-02-02T03:58:44.265Z"}
+{"level":"info","message":"Recommendations received","seedTrack":{"artist":"VDYCD","id":"3pqlWpRxYbZ4rOjrF2sdpS","name":"• L’Art du savoir • - Slowed"},"timestamp":"2025-02-02T03:58:44.266Z"}
+{"level":"info","message":"Access token obtained successfully","timestamp":"2025-02-02T03:58:44.452Z"}
+{"error":"Failed to connect","level":"error","message":"MongoDB operation failed","timestamp":"2025-02-02T03:59:14.746Z"}
