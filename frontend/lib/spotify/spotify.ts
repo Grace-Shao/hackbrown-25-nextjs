@@ -1,29 +1,145 @@
 import axios from 'axios';
-import logger from '@/utils/logger';
-import type { RecommendationOptions } from './type';
+
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN;
 
 const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 
-/**
- * Makes a request to the Spotify API to obtain a new access token using a refresh token.
- * @returns {Promise<{access_token: string}>} Object containing the access token
- * @throws {Error} If required Spotify credentials are missing or if the request fails
- */
-export const getAccessToken = async (): Promise<{ access_token: string }> => {
+interface AccessTokenResponse {
+  access_token: string;
+}
+
+interface Image {
+  url: string;
+  height: number;
+  width: number;
+}
+
+interface ExternalUrls {
+  spotify: string;
+}
+
+interface Artist {
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  name: string;
+  type: 'artist';
+  uri: string;
+}
+
+interface Album {
+  album_type: 'album' | 'single' | 'compilation';
+  total_tracks: number;
+  available_markets: string[];
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  images: Image[];
+  name: string;
+  release_date: string;
+  release_date_precision: string;
+  restrictions?: {
+    reason: string;
+  };
+  type: 'album';
+  uri: string;
+  artists: Artist[];
+}
+
+interface TrackItem {
+  album: Album;
+  artists: Artist[];
+  available_markets: string[];
+  disc_number: number;
+  duration_ms: number;
+  explicit: boolean;
+  external_ids: {
+    isrc?: string;
+    ean?: string;
+    upc?: string;
+  };
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  is_playable: boolean;
+  linked_from?: Record<string, never>;
+  restrictions?: {
+    reason: string;
+  };
+  name: string;
+  popularity: number;
+  preview_url: string;
+  track_number: number;
+  type: 'track';
+  uri: string;
+  is_local: boolean;
+}
+
+interface TopTracksResponse {
+  items: TrackItem[];
+}
+
+interface ArtistItem {
+  external_urls: ExternalUrls;
+  followers: {
+    href: string;
+    total: number;
+  };
+  genres: string[];
+  href: string;
+  id: string;
+  images: Image[];
+  name: string;
+  popularity: number;
+  type: 'artist';
+  uri: string;
+}
+
+interface TopArtistsResponse {
+  items: ArtistItem[];
+}
+
+interface PlaylistOwner {
+  external_urls: ExternalUrls;
+  followers: {
+    href: string;
+    total: number;
+  };
+  href: string;
+  id: string;
+  type: 'user';
+  uri: string;
+  display_name: string;
+}
+
+interface PlaylistResponse {
+  collaborative: boolean;
+  description: string;
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  images: Image[];
+  name: string;
+  owner: PlaylistOwner;
+  public: boolean;
+  snapshot_id: string;
+  tracks: {
+    href: string;
+    total: number;
+  };
+  type: string;
+  uri: string;
+}
+
+export const getAccessToken = async (): Promise<AccessTokenResponse> => {
   try {
     if (!client_id || !client_secret || !refresh_token) {
-      logger.error('Missing Spotify credentials', {
-        hasClientId: !!client_id,
-        hasClientSecret: !!client_secret,
-        hasRefreshToken: !!refresh_token
-      });
       throw new Error('Missing required Spotify credentials');
     }
 
-    const response = await axios.post(
+    const response = await axios.post<AccessTokenResponse>(
       'https://accounts.spotify.com/api/token',
       new URLSearchParams({
         grant_type: 'refresh_token',
@@ -37,11 +153,10 @@ export const getAccessToken = async (): Promise<{ access_token: string }> => {
       }
     );
 
-    logger.info('Access token obtained successfully');
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      logger.error('Failed to get access token', {
+      console.error('Failed to get access token', {
         status: error.response?.status,
       });
     }
@@ -49,15 +164,10 @@ export const getAccessToken = async (): Promise<{ access_token: string }> => {
   }
 };
 
-/**
- * Retrieves the user's top tracks from Spotify API.
- * @returns {Promise<any[]>} Array of user's top tracks from the last 4 weeks
- * @throws {Error} If the request fails or returns a non-200 status
- */
-export const topTracks = async (): Promise<any[]> => {
-  const { access_token }: { access_token: string } = await getAccessToken();
+export const topTracks = async (): Promise<TrackItem[]> => {
+  const { access_token } = await getAccessToken();
 
-  const response = await axios.get(
+  const response = await axios.get<TopTracksResponse>(
     'https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=short_term',
     {
       headers: {
@@ -67,21 +177,16 @@ export const topTracks = async (): Promise<any[]> => {
   );
 
   if (response.status !== 200) {
-    throw new Error('Failed to fetch top artists.');
+    throw new Error('Failed to fetch top tracks.');
   }
-  const data = response.data;
-  return data.items as any[];
+
+  return response.data.items;
 };
 
-/**
- * Retrieves the user's top artists from Spotify API.
- * @returns {Promise<any[]>} Array of user's top artists from the last 4 weeks
- * @throws {Error} If the request fails or returns a non-200 status
- */
-export const topArtists = async (): Promise<any[]> => {
+export const topArtists = async (): Promise<ArtistItem[]> => {
   const { access_token } = await getAccessToken();
 
-  const response = await axios.get(
+  const response = await axios.get<TopArtistsResponse>(
     'https://api.spotify.com/v1/me/top/artists?limit=5&time_range=short_term',
     {
       headers: {
@@ -94,15 +199,10 @@ export const topArtists = async (): Promise<any[]> => {
     throw new Error('Failed to fetch top artists.');
   }
 
-  const data = response.data;
-  return data.items as any[];
+  return response.data.items;
 };
 
-/**
- * Retrieves the user's currently playing song from Spotify API.
- * @returns {Promise<any|null>} Currently playing song data or null if no song is playing
- */
-export const currentlyPlayingSong = async () => {
+export const currentlyPlayingSong = async (): Promise<TrackItem | null> => {
   try {
     const { access_token } = await getAccessToken();
 
@@ -118,38 +218,29 @@ export const currentlyPlayingSong = async () => {
     }
 
     const data = await response.json();
-    return data;
+    return data.item;
   } catch (error) {
     console.error('Error fetching currently playing song:', error);
     return null;
   }
 };
 
-/**
- * Retrieves a Spotify playlist by its ID.
- * @param {string} playlistId - The Spotify playlist ID
- * @returns {Promise<any>} Playlist data
- */
-export const getPlaylist = async (playlistId: string) => {
-  const accessToken = await getAccessToken();
-  const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+export const getPlaylist = async (playlistId: string): Promise<PlaylistResponse> => {
+  const { access_token } = await getAccessToken();
+  const response = await axios.get<PlaylistResponse>(
+    `https://api.spotify.com/v1/playlists/${playlistId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
     },
-  });
+  );
   return response.data;
 };
 
-/**
- * Validates a Spotify track or artist ID.
- * @param {('track'|'artist')} type - The type of ID to validate
- * @param {string} id - The Spotify ID to validate
- * @param {string} accessToken - Valid Spotify access token
- * @returns {Promise<boolean>} Whether the ID is valid
- */
 async function validateSpotifyId(type: 'track' | 'artist', id: string, accessToken: string): Promise<boolean> {
   try {
-    const response = await axios.get(
+    await axios.get(
       `https://api.spotify.com/v1/${type}s/${id}`,
       {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -158,45 +249,48 @@ async function validateSpotifyId(type: 'track' | 'artist', id: string, accessTok
     );
     return true;
   } catch (error) {
-    logger.warn(`Invalid ${type} ID`, { id });
+    console.warn(`Invalid ${type} ID`, { id });
     return false;
   }
 }
 
-/**
- * Gets a valid track from a playlist that meets popularity criteria.
- * @param {any} playlist - The playlist object containing tracks
- * @param {string} accessToken - Valid Spotify access token
- * @returns {Promise<any|null>} A valid track or null if none found
- */
-export async function getValidTrackFromPlaylist(playlist: any, accessToken: string) {
-  for (const item of playlist.tracks.items) {
-    if (!item?.track?.id || !item?.track?.artists?.[0]?.id || item?.track?.popularity <= 50) {
-      continue;
-    }
+// export async function getValidTrackFromPlaylist(
+//   playlist: PlaylistResponse,
+//   accessToken: string
+// ): Promise<TrackItem | null> {
+//   if (!playlist.(tracks as {
+//     items: { track: TrackItem }[];
+//   })?.items?.length) return null; // Ensure tracks exist
 
-    const [isValidTrack, isValidArtist] = await Promise.all([
-      validateSpotifyId('track', item.track.id, accessToken),
-      validateSpotifyId('artist', item.track.artists[0].id, accessToken)
-    ]);
+//   for (const item of playlist.tracks.items) {
+//     const track = item?.track;
+//     if (!track || !track.id || !track.artists?.[0]?.id || track.popularity <= 50) {
+//       continue;
+//     }
 
-    if (isValidTrack && isValidArtist) {
-      return item.track;
-    }
-  }
-  return null;
-}
+//     try {
+//       const [isValidTrack, isValidArtist] = await Promise.all([
+//         validateSpotifyId('track', track.id, accessToken),
+//         validateSpotifyId('artist', track.artists[0].id, accessToken),
+//       ]);
 
-/**
- * Fetches available genre seeds from Spotify API.
- * @deprecated Use seed_genres parameter in getRecommendations instead
- * @returns {Promise<string[]>} Array of available genre names or fallback genres
- */
+//       if (isValidTrack && isValidArtist) {
+//         return track;
+//       }
+//     } catch (error) {
+//       console.error('Error validating track or artist:', error);
+//     }
+//   }
+
+//   return null;
+// }
+
+
 export const getAvailableGenres = async (): Promise<string[]> => {
   try {
     const { access_token } = await getAccessToken();
 
-    const response = await axios.get(
+    const response = await axios.get<{ genres: string[] }>(
       'https://api.spotify.com/v1/recommendations/available-genre-seeds',
       {
         headers: {
@@ -204,21 +298,14 @@ export const getAvailableGenres = async (): Promise<string[]> => {
         },
       },
     );
-    logger.info('Available genres fetched', { genres: response.data.genres });
     return response.data.genres;
   } catch (error) {
-    logger.warn('Using fallback genres');
+    console.warn('Using fallback genres');
     return ['pop', 'rock', 'hip-hop'];
   }
 };
 
-/**
- * Gets detailed information about a Spotify playlist including its tracks.
- * @param {string} playlistId - The Spotify playlist ID
- * @returns {Promise<any>} Detailed playlist data
- * @throws {Error} If playlist ID is invalid, playlist not found, or authentication fails
- */
-export const getDetailedPlaylist = async (playlistId: string) => {
+export const getDetailedPlaylist = async (playlistId: string): Promise<PlaylistResponse> => {
   try {
     const { access_token } = await getAccessToken();
 
@@ -226,7 +313,7 @@ export const getDetailedPlaylist = async (playlistId: string) => {
       throw new Error('Invalid playlist ID format');
     }
 
-    const response = await axios.get(
+    const response = await axios.get<PlaylistResponse>(
       `https://api.spotify.com/v1/playlists/${playlistId}`,
       {
         headers: {
@@ -239,21 +326,56 @@ export const getDetailedPlaylist = async (playlistId: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 404) {
-        logger.error('Playlist not found', { playlistId });
+        console.error('Playlist not found', { playlistId });
         throw new Error(`Playlist ${playlistId} not found`);
       }
       if (error.response?.status === 401) {
-        logger.error('Authentication failed', {
+        console.error('Authentication failed', {
           status: error.response.status,
           data: error.response.data
         });
         throw new Error('Authentication failed');
       }
     }
-    logger.error('Spotify API error', {
+    console.error('Spotify API error', {
       error: (error as Error).message,
       playlistId
     });
     throw error;
   }
 };
+
+interface SearchTrack {
+  name: string;
+  artists: Artist[];
+  id: string;
+}
+
+interface SearchResponse {
+  tracks: {
+    items: SearchTrack[];
+  };
+}
+
+export async function searchSpotifyTracks(genres: string): Promise<SearchTrack[]> {
+  const { access_token } = await getAccessToken();
+
+  try {
+    const searchQuery = `genre:${genres}`;
+    const response = await axios.get<SearchResponse>('https://api.spotify.com/v1/search', {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      params: {
+        q: searchQuery,
+        type: 'track',
+        limit: 10,
+      },
+    });
+
+    return response.data.tracks.items;
+  } catch (error) {
+    console.error('Failed to search Spotify:', error);
+    throw error;
+  }
+}
