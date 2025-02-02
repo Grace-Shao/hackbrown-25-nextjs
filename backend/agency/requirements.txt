@@ -1,6 +1,0 @@
-flask
-boto3
-dotenv
-agency_swarm
-openai
-pydantic
