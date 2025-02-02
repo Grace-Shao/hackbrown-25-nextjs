@@ -27,7 +27,7 @@ export default function Home() {
             {/* <p className="text-lg text-center absolute top-40 mt-4">
             Find the perfect song for your pictures
             </p> */}
-            <Link href="/uploadPicturePage">
+            <Link href="/userTypePage">
               <button className="absolute inset-0 w-full h-full bg-transparent text-white text-4xl font-bold flex items-center justify-center"
               ></button>
             </Link>
