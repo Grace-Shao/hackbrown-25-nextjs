@@ -13,7 +13,7 @@ export default function UserTypePage() {
     <div className="min-h-screen flex flex-col items-center relative">
       <Navbar />
     <div className="w-full max-w-md mt-12 p-8 bg-[#a375ca] rounded-lg shadow-md z-10 h-70">
-        <h1 className="text-4xl font-bold mb-4 text-center">Select Your Usage Type</h1>
+        <h1 className="text-4xl font-bold mb-4 text-center">Select Usage Type</h1>
         <div className="flex flex-col gap-4">
           <div className="flex gap-4">
             <Link href="/uploadPicturePage" className="flex-1">

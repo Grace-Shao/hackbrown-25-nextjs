@@ -12,10 +12,7 @@ export default function Navbar() {
                         <a className="text-lg hover:text-white hover:underline">Home</a>
                     </Link>
                     <Link legacyBehavior href="/uploadPicturePage">
-                        <a className="text-lg text-black-800 hover:text-white hover:underline">Upload a Picture</a>
-                    </Link>
-                    <Link legacyBehavior href="/userTypePage">
-                    <a className="text-lg hover:underline hover:text-pink-400">Contact</a>
+                        <a className="text-lg text-black-800 hover:text-white hover:underline">Create Music from Pictures</a>
                     </Link>
                 </div>
             </div>
