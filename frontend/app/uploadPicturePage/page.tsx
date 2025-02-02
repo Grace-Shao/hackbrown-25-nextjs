@@ -53,14 +53,16 @@ export default function UploadPicturePage() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1>Upload an Image to Get Music Keywords</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Analyzing...' : 'Analyze Image'}
-        </button>
-      </form>
+    <div className="min-h-screen flex flex-col items-center">
+        <div className="z-10">
+        <Navbar />
+        <h1 className="text-4xl font-bold mb-4">Upload a Picture</h1>      
+        <form onSubmit={handleSubmit}>
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+            <button type="submit" disabled={loading}>
+            {loading ? 'Analyzing...' : 'Analyze Image'}
+            </button>
+        </form>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -70,6 +72,16 @@ export default function UploadPicturePage() {
           <p>{musicKeywords}</p>
         </div>
       )}
+      </div>
+       <video
+            autoPlay
+            loop
+            muted
+            className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        >
+            <source src="/vinylDisk.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
     </div>
   );
 }
