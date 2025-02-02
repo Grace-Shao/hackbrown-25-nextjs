@@ -1,7 +1,4 @@
-# import pandas
 import pandas as pd
- 
-# scikit-learn imports
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
@@ -12,33 +9,18 @@ num_col = [col for col in tracks.columns if tracks[col].dtype != 'object']
 
 unique_tracks = tracks.drop_duplicates().reset_index(drop=True)
 duplicates = unique_tracks['track_id'].duplicated()
-
 unique_tracks = unique_tracks.drop(['track_id'], axis = 1)
-
 unique_genres = unique_tracks["track_genre"].unique()
-
 label_encoder = LabelEncoder()
 unique_tracks['track_genre'] = label_encoder.fit_transform(unique_tracks['track_genre'])
-
-
 unique_tracks["track_genre"].unique()
 non_unique_rows = unique_tracks[unique_tracks.duplicated(keep=False)]
-
-
 unique_tracks = unique_tracks.drop_duplicates(subset=['track_name'], keep='first').reset_index(drop=True)
 non_unique_rows = unique_tracks[unique_tracks.duplicated(keep=False)]
-
 unique_tracks['explicit'] = unique_tracks['explicit'].astype(int)
 
 def scale_columns():
-    '''In this function, we'll be scaling the data by standardizing it, making sure that it's a dataframe,
-    printing its head and shape, and then returning the scaled dataframe.'''
-    
-    # TODO: create a StandardScaler() object, fit the scaler to the numerical data and transform the data, 
-    # convert to dataframe
     scaler = StandardScaler()
-
-    # fit the scaler to the data and transform it
     scaled_data = scaler.fit_transform(unique_tracks.drop(columns=['album_name', 'track_name', 'artists']))
     scaled_df = pd.DataFrame(scaled_data, columns=unique_tracks.columns.drop(['album_name', 'track_name', 'artists']))
 
