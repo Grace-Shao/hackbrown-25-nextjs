@@ -3,12 +3,14 @@ import joblib
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 
+
 def model_fn(model_dir):
     """Load model components from the model directory."""
-    knn = joblib.load(os.path.join(model_dir, 'knn_model.pkl'))
-    scaler = joblib.load(os.path.join(model_dir, 'scaler.pkl'))
-    label_encoder = joblib.load(os.path.join(model_dir, 'label_encoder.pkl'))
+    knn = joblib.load(os.path.join(model_dir, "knn_model.pkl"))
+    scaler = joblib.load(os.path.join(model_dir, "scaler.pkl"))
+    label_encoder = joblib.load(os.path.join(model_dir, "label_encoder.pkl"))
     return knn, scaler, label_encoder
+
 
 def predict_fn(input_data, model):
     """Generate predictions."""
