@@ -1,4 +1,3 @@
-from flask import Flask, request, jsonify
 import boto3
 import openai
 from dotenv import load_dotenv
@@ -7,16 +6,11 @@ import os
 # Load environment variables from .env
 load_dotenv()
 
-# Initialize Flask app
-app = Flask(__name__)
-
 # AWS and OpenAI credentials
 aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 aws_region = os.getenv("AWS_REGION")
 openai_api_key = os.getenv("OPENAI_API_KEY")
-
-# Initialize AWS Rekognition client
 rekognition_client = boto3.client(
     'rekognition',
     aws_access_key_id=aws_access_key,
@@ -24,17 +18,20 @@ rekognition_client = boto3.client(
     region_name=aws_region
 )
 
-# Set OpenAI API key
 openai.api_key = openai_api_key
 
 # Function to analyze the image with AWS Rekognition
-def analyze_image_with_rekognition(image_bytes):
+def analyze_image_with_rekognition(image_path):
+    with open(image_path, 'rb') as image_file:
+        image_bytes = image_file.read()
+
     # Call AWS Rekognition to detect labels
     response = rekognition_client.detect_labels(
         Image={'Bytes': image_bytes},
         MaxLabels=10,
         MinConfidence=70
     )
+    
     return response['Labels']
 
 # Function to generate a prompt for OpenAI based on Rekognition labels
@@ -78,38 +75,17 @@ def generate_music_keywords(image_description):
     
     # Return only the keywords from the response
     return response.choices[0].message["content"].strip()
+def AWSImageCaption():
+    image_path = "../../image/download.jpg"  
+    labels = analyze_image_with_rekognition(image_path)
+    prompt = generate_prompt(labels)
+    image_description = generate_image_description(prompt)
+    music_keywords = generate_music_keywords(image_description)
 
-# API endpoint to handle image upload and return music keywords
-@app.route('/analyze-image', methods=['POST'])
-def analyze_image():
-    try:
-        # Check if the request contains a file
-        if 'file' not in request.files:
-            return jsonify({"error": "No file provided"}), 400
+    # print("\nGenerated Image Description:")
+    print(image_description)
+    # print("\nGenerated Music Keywords for Spotify:")
+    print(music_keywords)
 
-        file = request.files['file']
-
-        # Read the file as bytes
-        image_bytes = file.read()
-
-        # Analyze the image with AWS Rekognition
-        labels = analyze_image_with_rekognition(image_bytes)
-
-        # Generate a prompt for OpenAI
-        prompt = generate_prompt(labels)
-
-        # Generate an image description using OpenAI
-        image_description = generate_image_description(prompt)
-
-        # Generate music keywords based on the image description
-        music_keywords = generate_music_keywords(image_description)
-
-        # Return the music keywords as the API response
-        return jsonify({"music_keywords": music_keywords}), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Run the Flask app
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    AWSImageCaption()
