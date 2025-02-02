@@ -1,5 +1,6 @@
 from agency_swarm import Agent
 
+
 class TrendAnalyzer(Agent):
     def __init__(self):
         super().__init__(
@@ -8,5 +9,5 @@ class TrendAnalyzer(Agent):
             instructions="./music_instructions.md",
             tools_folder="./music_tools",
             temperature=0.5,
-            max_prompt_tokens=4000
+            max_prompt_tokens=4000,
         )

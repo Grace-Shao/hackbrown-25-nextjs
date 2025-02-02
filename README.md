@@ -10,6 +10,8 @@ In2ne is designed with two modes to serve both everyday users and content creato
 
 For content creators, In2ne taps into agency power through a multi-agent system. It first classifies their uploaded image and then calls on a trend analyzer agent. This agent scans platforms like TikTok, YouTube, and Tavily via APIs to scrape data on the most viral music based on metrics such as likes, views, comments, and shares. In2ne suggests a track that aligns with the content creator’s image, enabling them to stay relevant and trendy in the fast-paced world of social media.
 
+https://github.com/user-attachments/assets/20311bff-516f-40c6-9f52-a7e0b1498dfb
+
 ## How We Built
 
 The front end of In2ne is built with Next.js, Tailwind CSS, and TypeScript, ensuring a sleek and responsive user experience. On the backend, we implemented Flask and Python, Pinecone for vector database, supported by AgencySwarm and OpenAI integrations. 
