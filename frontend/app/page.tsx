@@ -17,10 +17,10 @@ export default function Home() {
         <main className="flex flex-col items-center gap-8">
         <header className="absolute top-4 mt-4">
           <Image
-            src="/logo.png" // Replace with your logo path
+            src="/logoCrop.png" // Replace with your logo path
             alt="Your Logo"
-            width={180}
-            height={60}
+            width={360} // Increased width
+            height={120} // Increased height
             priority
           />
         </header>
