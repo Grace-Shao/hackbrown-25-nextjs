@@ -3,12 +3,15 @@ import Link from "next/link";
 import Navbar from "../components/navbar/Navbar";
 import { useState } from "react";
 import axios from "axios";
+import Popup from "../components/Popup";
 
 export default function UploadPicturePage() {
   const [file, setFile] = useState(null);
   const [musicKeywords, setMusicKeywords] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+
 
   // @ts-ignore
   const handleFileChange = (e) => {
@@ -44,12 +47,18 @@ export default function UploadPicturePage() {
       }
 
       setMusicKeywords(response.data.music_keywords);
+      setShowPopup(true);
+
     } catch (err) {
       setError('Failed to analyze the image. Please try again.');
       console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+  
+  const handleClosePopup = () => {
+    setShowPopup(false);
   };
 
   return (
@@ -82,6 +91,8 @@ export default function UploadPicturePage() {
             <source src="/vinylDisk.mp4" type="video/mp4" />
             Your browser does not support the video tag.
         </video>
+        {showPopup && <Popup text={musicKeywords} onClose={handleClosePopup} />}
+
     </div>
   );
 }
