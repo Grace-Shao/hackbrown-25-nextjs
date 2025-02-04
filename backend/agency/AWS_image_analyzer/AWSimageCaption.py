@@ -20,6 +20,7 @@ rekognition_client = boto3.client(
 
 openai.api_key = openai_api_key
 
+
 def analyze_image_with_rekognition(image_path):
     with open(image_path, "rb") as image_file:
         image_bytes = image_file.read()
@@ -29,6 +30,7 @@ def analyze_image_with_rekognition(image_path):
     )
 
     return response["Labels"]
+
 
 def generate_prompt(labels):
     label_descriptions = [
@@ -43,6 +45,7 @@ def generate_prompt(labels):
     )
     return prompt
 
+
 def generate_image_description(prompt):
     response = openai.ChatCompletion.create(
         model="gpt-4",
@@ -55,6 +58,7 @@ def generate_image_description(prompt):
         ],
     )
     return response.choices[0].message["content"]
+
 
 def generate_music_keywords(image_description):
     keyword_prompt = (
